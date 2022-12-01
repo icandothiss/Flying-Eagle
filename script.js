@@ -1,19 +1,35 @@
-const text = document.querySelector(".loading-text");
-image = document.querySelector(".bg");
+const sliderContainer = document.querySelector(".slider-container");
+const slideRight = document.querySelector(".right-slide");
+const slideLeft = document.querySelector(".left-slide");
+const upButton = document.querySelector(".up-button");
+const downButton = document.querySelector(".down-button");
+const slidesLength = slideRight.querySelectorAll("div").length;
 
-let progress = 0;
-let blurr = 20;
-let blurPercentage = 20 / 100;
-let textOpacity = 1;
-const loop = setInterval(() => {
-  image.style.filter = `blur(${blurr}px)`;
-  text.style.opacity = textOpacity;
-  blurr = blurr - blurPercentage;
-  textOpacity = textOpacity - 0.01;
-  progress = progress + 0.01;
-  let current = Math.ceil(progress * 100);
-  text.innerText = `${current}%`;
-  if (current === 100) {
-    clearInterval(loop);
+let activeSlideIndex = 0;
+
+slideLeft.style.top = `-${(slidesLength - 1) * 100}vh`;
+
+upButton.addEventListener("click", () => changeSlide("up"));
+downButton.addEventListener("click", () => changeSlide("down"));
+
+const changeSlide = (direction) => {
+  const sliderHeight = sliderContainer.clientHeight;
+  if (direction === "up") {
+    activeSlideIndex++;
+    if (activeSlideIndex > slidesLength - 1) {
+      activeSlideIndex = 0;
+    }
+  } else if (direction === "down") {
+    activeSlideIndex--;
+    if (activeSlideIndex < 0) {
+      activeSlideIndex = slidesLength - 1;
+    }
   }
-}, 30);
+
+  slideRight.style.transform = `translateY(-${
+    activeSlideIndex * sliderHeight
+  }px)`;
+  slideLeft.style.transform = `translateY(${
+    activeSlideIndex * sliderHeight
+  }px)`;
+};
